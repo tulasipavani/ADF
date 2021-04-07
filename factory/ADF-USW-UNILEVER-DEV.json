@@ -1,0 +1,9 @@
+{
+	"name": "ADF-USW-UNILEVER-DEV",
+	"location": "ukwest",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "8e772bad-61fa-4c9b-99d9-d04a47340d80",
+		"tenantId": "79e1556e-69aa-4d61-b43d-cba9a9ae8385"
+	}
+}

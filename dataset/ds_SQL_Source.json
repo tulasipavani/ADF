@@ -1,0 +1,121 @@
+{
+	"name": "ds_SQL_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_cargo_source_load",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL Tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CSD_CODE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FILE_NO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LOT_NO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OCEAN_AIR",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CUST_CODE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "STRIP_DATE",
+				"type": "date"
+			},
+			{
+				"name": "HOLD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DAD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RECEIVED_DATE",
+				"type": "date"
+			},
+			{
+				"name": "CONTAINER",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PCS",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "POUNDS",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "CUBE",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "PICKUP_DATE",
+				"type": "date"
+			},
+			{
+				"name": "HOUSE_REF_NO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COMMODITY1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "STATE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ZIP_CNTY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CONSIGNEE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "STATUS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TRANSFER_YN",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RELEASEFD_YN",
+				"type": "nvarchar"
+			},
+			{
+				"name": "INSERTED_TIMESTAMP",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TblClearedCargo"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

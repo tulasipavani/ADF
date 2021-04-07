@@ -1,0 +1,38 @@
+{
+	"name": "Target_file_Dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blobstorage_zbbstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dsprtargetfilename": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(dataset().dsprtargetfilename,formatDateTime(utcnow(),'_yyyy-MM-dd hh:mm:ss'))",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+					"type": "Expression"
+				},
+				"container": "fusion"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
