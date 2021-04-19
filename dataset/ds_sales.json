@@ -1,5 +1,5 @@
 {
-	"name": "ds_employeenew",
+	"name": "ds_sales",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_blobstorage_zbbstorageaccount",
@@ -10,24 +10,29 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employee_new.csv",
+				"fileName": "sales.csv",
 				"container": "cordillera"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
+			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": [
 			{
+				"name": "Saledata",
 				"type": "String"
 			},
 			{
+				"name": "salesItem",
 				"type": "String"
 			},
 			{
+				"name": "country",
 				"type": "String"
 			},
 			{
+				"name": "Quantity",
 				"type": "String"
 			}
 		]

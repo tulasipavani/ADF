@@ -1,0 +1,24 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_sales",
+						"type": "DatasetReference"
+					},
+					"name": "SalesTable"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "ErrorRecords"
+				}
+			],
+			"script": "source(output(\n\t\tSaledata as string,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SalesTable\nSalesTable split(isNull(toDate(Saledata,'dd-MMM-yyyy')),\n\tdisjoint: false) ~> ErrorRecords@(ErrorRecord, GoodRows)"
+		}
+	}
+}
