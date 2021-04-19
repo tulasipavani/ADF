@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADF-USW-UNILEVER-DEV"
+		},
+		"LS_blobstorage_zbbstorageaccount_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlSourceDB_ZBBDB_connectionString": {
+			"value": ""
+		},
+		"LS_blobstorage_Cargeo_connectionString": {
+			"value": ""
+		},
+		"LS_SQL_cargo_connectionString": {
+			"value": ""
+		},
+		"LS_SQL_cargo_source_load_connectionString": {
+			"value": ""
+		}
+	}
+}
