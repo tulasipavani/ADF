@@ -1,0 +1,705 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ADF-USW-UNILEVER-DEV"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1_dynamic_iffileexists_dynamic')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Source_file_Dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"dspasourcefilename": {
+										"value": "@pipeline().parameters.piplinparameter",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('Get Metadata1').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Source_file_Dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"dspasourcefilename": {
+													"value": "@pipeline().parameters.piplinparameter",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Target_file_Dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"dsprtargetfilename": {
+													"value": "@pipeline().parameters.piplinparameter",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"piplinparameter": {
+						"type": "string",
+						"defaultValue": "FF_PL_MEAS_MTDTA_20200311"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-04-07T07:51:02Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_cargo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CSD_CODE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CSD_CODE",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "FILE_NO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "FILE_NO",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LOT_NO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LOT_NO",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "OCEAN_AIR",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "OCEAN_AIR",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CUST_CODE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CUST_CODE",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "STRIP_DATE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STRIP_DATE",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									},
+									{
+										"source": {
+											"name": "HOLD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "HOLD",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "DAD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DAD",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "RECEIVED_DATE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RECEIVED_DATE",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									},
+									{
+										"source": {
+											"name": "CONTAINER",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CONTAINER",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PCS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PCS",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 12
+										}
+									},
+									{
+										"source": {
+											"name": "POUNDS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "POUNDS",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 12
+										}
+									},
+									{
+										"source": {
+											"name": "CUBE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CUBE",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 12
+										}
+									},
+									{
+										"source": {
+											"name": "PICKUP_DATE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PICKUP_DATE",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									},
+									{
+										"source": {
+											"name": "HOUSE_REF_NO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "HOUSE_REF_NO",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "COMMODITY1",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "COMMODITY1",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "STATE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATE",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ZIP_CNTY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ZIP_CNTY",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CONSIGNEE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CONSIGNEE",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATUS",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "TRANSFER_YN",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TRANSFER_YN",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "RELEASEFD_YN",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RELEASEFD_YN",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "INSERTED_TIMESTAMP",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "INSERTED_TIMESTAMP",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_cargo_blob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_cargo_sql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-04-07T07:51:02Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_dynamic_1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Source_file_Dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"dspasourcefilename": {
+										"value": "@pipeline().parameters.pipelinefile",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('Get Metadata1').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_blob_dynamic_source",
+											"type": "DatasetReference",
+											"parameters": {
+												"ds_source_dynmic": {
+													"value": "@pipeline().parameters.pipelinefile",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Target_file",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"pipelinefile": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-04-07T07:51:02Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_sales",
+								"type": "DatasetReference"
+							},
+							"name": "SalesTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_sales_bad",
+								"type": "DatasetReference"
+							},
+							"name": "ErrorRecord"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_salestable",
+								"type": "DatasetReference"
+							},
+							"name": "GoodRows"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ErrorRecords"
+						},
+						{
+							"name": "filename"
+						},
+						{
+							"name": "DerivedColumngoodrows"
+						}
+					],
+					"script": "source(output(\n\t\tSaledata as string,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SalesTable\nSalesTable split(isNull(toDate(Saledata,'dd-MMM-yyyy')),\n\tdisjoint: false) ~> ErrorRecords@(ErrorRecord, GoodRows)\nErrorRecords@ErrorRecord derive(Filename = 'sales.csv') ~> filename\nErrorRecords@GoodRows derive(filename = 'sales.csv',\n\t\tSaledata = toDate(Saledata,'dd-MMM-yyyy'),\n\t\tQuantity = toInteger(Quantity)) ~> DerivedColumngoodrows\nfilename sink(input(\n\t\tSaledata as string,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as string,\n\t\tfilename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSaledata,\n\t\tsalesItem,\n\t\tcountry,\n\t\tQuantity,\n\t\tfilename = Filename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> ErrorRecord\nDerivedColumngoodrows sink(input(\n\t\tSaledata as date,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as integer,\n\t\tfilename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSaledata,\n\t\tsalesItem,\n\t\tcountry,\n\t\tQuantity,\n\t\tfilename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoodRows"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

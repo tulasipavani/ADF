@@ -5,22 +5,22 @@
 		"factoryName": {
 			"value": "ADF-USW-UNILEVER-DEV"
 		},
-		"LS_blobstorage_zbbstorageaccount_connectionString": {
-			"value": ""
-		},
-		"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
-			"value": ""
-		},
 		"LS_AzureSqlSourceDB_ZBBDB_connectionString": {
 			"value": ""
 		},
-		"LS_blobstorage_Cargeo_connectionString": {
+		"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
 			"value": ""
 		},
 		"LS_SQL_cargo_connectionString": {
 			"value": ""
 		},
 		"LS_SQL_cargo_source_load_connectionString": {
+			"value": ""
+		},
+		"LS_blobstorage_Cargeo_connectionString": {
+			"value": ""
+		},
+		"LS_blobstorage_zbbstorageaccount_connectionString": {
 			"value": ""
 		}
 	}

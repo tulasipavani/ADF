@@ -7,21 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "ADF-USW-UNILEVER-DEV"
 		},
-		"LS_blobstorage_zbbstorageaccount_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_blobstorage_zbbstorageaccount'"
-		},
-		"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlTargetDB_ZBBDB'"
-		},
 		"LS_AzureSqlSourceDB_ZBBDB_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlSourceDB_ZBBDB'"
 		},
-		"LS_blobstorage_Cargeo_connectionString": {
+		"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_blobstorage_Cargeo'"
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlTargetDB_ZBBDB'"
 		},
 		"LS_SQL_cargo_connectionString": {
 			"type": "secureString",
@@ -30,6 +22,14 @@
 		"LS_SQL_cargo_source_load_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_SQL_cargo_source_load'"
+		},
+		"LS_blobstorage_Cargeo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_blobstorage_Cargeo'"
+		},
+		"LS_blobstorage_zbbstorageaccount_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_blobstorage_zbbstorageaccount'"
 		},
 		"containerUri": {
 			"type": "string",
@@ -58,23 +58,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"LS_blobstorage_zbbstorageaccount_connectionString": {
-						"value": "[parameters('LS_blobstorage_zbbstorageaccount_connectionString')]"
-					},
-					"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
-						"value": "[parameters('LS_AzureSqlTargetDB_ZBBDB_connectionString')]"
-					},
 					"LS_AzureSqlSourceDB_ZBBDB_connectionString": {
 						"value": "[parameters('LS_AzureSqlSourceDB_ZBBDB_connectionString')]"
 					},
-					"LS_blobstorage_Cargeo_connectionString": {
-						"value": "[parameters('LS_blobstorage_Cargeo_connectionString')]"
+					"LS_AzureSqlTargetDB_ZBBDB_connectionString": {
+						"value": "[parameters('LS_AzureSqlTargetDB_ZBBDB_connectionString')]"
 					},
 					"LS_SQL_cargo_connectionString": {
 						"value": "[parameters('LS_SQL_cargo_connectionString')]"
 					},
 					"LS_SQL_cargo_source_load_connectionString": {
 						"value": "[parameters('LS_SQL_cargo_source_load_connectionString')]"
+					},
+					"LS_blobstorage_Cargeo_connectionString": {
+						"value": "[parameters('LS_blobstorage_Cargeo_connectionString')]"
+					},
+					"LS_blobstorage_zbbstorageaccount_connectionString": {
+						"value": "[parameters('LS_blobstorage_zbbstorageaccount_connectionString')]"
 					}
 				}
 			},
@@ -98,6 +98,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'ADF-USW-UNILEVER-DEV_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "ADF-USW-UNILEVER-DEV_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ADF-USW-UNILEVER-DEV_ArmTemplate_1')]"
 			]
 		}
 	]
