@@ -1,0 +1,22 @@
+{
+	"name": "ds_inputfilename",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blobstorage_zbbstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"flename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "cordillera"
+			}
+		}
+	}
+}
