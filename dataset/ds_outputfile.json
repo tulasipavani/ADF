@@ -1,0 +1,21 @@
+{
+	"name": "ds_outputfile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blobstorage_zbbstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "ouput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

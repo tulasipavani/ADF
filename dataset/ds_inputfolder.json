@@ -1,0 +1,95 @@
+{
+	"name": "ds_inputfolder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blobstorage_zbbstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "cordillera"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SourceSystem",
+				"type": "String"
+			},
+			{
+				"name": "SourceOperatingConcern",
+				"type": "String"
+			},
+			{
+				"name": "SourceFieldName",
+				"type": "String"
+			},
+			{
+				"name": "VF name",
+				"type": "String"
+			},
+			{
+				"name": "SourceFieldDescription",
+				"type": "String"
+			},
+			{
+				"name": "CostElementCode",
+				"type": "String"
+			},
+			{
+				"name": "CostElementDescription",
+				"type": "String"
+			},
+			{
+				"name": "TradingPartner",
+				"type": "String"
+			},
+			{
+				"name": "SignConversionFactor",
+				"type": "String"
+			},
+			{
+				"name": "FinanceMeasureCode",
+				"type": "String"
+			},
+			{
+				"name": "FinanceMeasureDescription",
+				"type": "String"
+			},
+			{
+				"name": "StartDate",
+				"type": "String"
+			},
+			{
+				"name": "EndDate",
+				"type": "String"
+			},
+			{
+				"name": "CostReportingGroup",
+				"type": "String"
+			},
+			{
+				"name": "FinanceMeasureGroup",
+				"type": "String"
+			},
+			{
+				"name": "ProductHierarchyLevelName",
+				"type": "String"
+			},
+			{
+				"name": "CustomerHierarchyLevelName",
+				"type": "String"
+			},
+			{
+				"name": "Update Date",
+				"type": "String"
+			}
+		]
+	}
+}
