@@ -1,0 +1,101 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ADF-USW-UNILEVER-DEV"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ErrorHandlingPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ErrorHandling",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "ErrorHandling",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/ErrorHandling')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ErrorHandling')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_sales",
+								"type": "DatasetReference"
+							},
+							"name": "SalesTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_sales_bad",
+								"type": "DatasetReference"
+							},
+							"name": "ErrorRecord"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_salestable",
+								"type": "DatasetReference"
+							},
+							"name": "GoodRows"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ErrorRecords"
+						},
+						{
+							"name": "filename"
+						},
+						{
+							"name": "DerivedColumngoodrows"
+						}
+					],
+					"script": "source(output(\n\t\tSaledata as string,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SalesTable\nSalesTable split(isNull(toDate(Saledata,'dd-MMM-yyyy')),\n\tdisjoint: false) ~> ErrorRecords@(ErrorRecord, GoodRows)\nErrorRecords@ErrorRecord derive(Filename = 'sales.csv') ~> filename\nErrorRecords@GoodRows derive(filename = 'sales.csv',\n\t\tSaledata = toDate(Saledata,'dd-MMM-yyyy'),\n\t\tQuantity = toInteger(Quantity)) ~> DerivedColumngoodrows\nfilename sink(input(\n\t\tSaledata as string,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as string,\n\t\tfilename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSaledata,\n\t\tsalesItem,\n\t\tcountry,\n\t\tQuantity,\n\t\tfilename = Filename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> ErrorRecord\nDerivedColumngoodrows sink(input(\n\t\tSaledata as date,\n\t\tsalesItem as string,\n\t\tcountry as string,\n\t\tQuantity as integer,\n\t\tfilename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSaledata,\n\t\tsalesItem,\n\t\tcountry,\n\t\tQuantity,\n\t\tfilename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoodRows"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
