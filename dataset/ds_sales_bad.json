@@ -1,0 +1,37 @@
+{
+	"name": "ds_sales_bad",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_cargo",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Saledata",
+				"type": "nvarchar"
+			},
+			{
+				"name": "salesItem",
+				"type": "nvarchar"
+			},
+			{
+				"name": "country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "filename",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tablesales_bad"
+		}
+	}
+}
